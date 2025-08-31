@@ -120,10 +120,12 @@ async def improve_resume(res_id: int, current_user: Any = Depends(get_current_us
     :raises HTTPException: 404 — если резюме не найдено.
     :return: Резюме с модифицированным полем `content` в формате `ResumeOut`.
     """
-    item: Dict[str, Any] = await resumedb.get_by_id_for_user(res_id, current_user.id)
-    if not item:
+    resume_obj = await resumedb.get_by_id_for_user(res_id, current_user.id)
+    if not resume_obj:
         raise HTTPException(status_code=404, detail="Resume not found")
-    return {**item, "content": f"{item.get('content', '')} [Improved]"}
+
+    out = ResumeOut.model_validate(resume_obj)
+    return out.model_copy(update={"content": f"{(out.content or '')} [Improved]"})
 
 
 @protected_resume_router.put("/{res_id}", response_model=ResumeOut)

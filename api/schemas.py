@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
 
 class UserRegistration(BaseModel):
@@ -58,5 +58,4 @@ class ResumeOut(BaseModel):
     title: str = Field(..., description="Заголовок резюме")
     content: str = Field(..., description="Содержимое резюме")
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
